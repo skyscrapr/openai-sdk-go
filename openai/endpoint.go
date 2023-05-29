@@ -1,7 +1,6 @@
 package openai
 
 import (
-	"log"
 	"net/http"
 	"net/url"
 	"path"
@@ -12,7 +11,7 @@ const (
 )
 
 type endpointI interface {
-	buildURL(endpoint string) *url.URL
+	buildURL(endpoint string) (*url.URL, error)
 	newRequest(method string, u *url.URL, body interface{}) (*http.Request, error)
 	doRequest(req *http.Request, v any) error
 }
@@ -30,15 +29,15 @@ func newEndpoint(c *Client, endpointPath string) *endpoint {
 	return e
 }
 
-func (e *endpoint) buildURL(endpointPath string) *url.URL {
+func (e *endpoint) buildURL(endpointPath string) (*url.URL, error) {
 	u, err := url.Parse(endpointPath)
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 	u.Path = path.Join(e.EndpointPath, u.Path)
 	u.Path = path.Join(apiPath, u.Path)
 	u.Path = path.Join(e.BaseURL.Path, u.Path)
-	return e.BaseURL.ResolveReference(u)
+	return e.BaseURL.ResolveReference(u), err
 }
 
 func (e *endpoint) doRequest(req *http.Request, v any) error {

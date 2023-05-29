@@ -37,7 +37,10 @@ func NewClient(authToken string) *Client {
 }
 
 func (c *Client) do(e endpointI, method string, path string, body interface{}, result interface{}) error {
-	u := e.buildURL(path)
+	u, err := e.buildURL(path)
+	if err != nil {
+		return err
+	}
 	req, err := e.newRequest(method, u, body)
 	if err != nil {
 		return err
