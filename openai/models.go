@@ -51,9 +51,10 @@ type Models struct {
 	Data   []Model `json:"data"`
 }
 
-// ListModels
+// Lists the currently available models,
+// and provides basic information about each one such as the owner and availability.
 //
-//	Lists the currently available models, and provides basic information about each one such as the owner and availability.
+// [OpenAI Documentation]: https://beta.openai.com/docs/api-reference/models/list
 func (e *ModelsEndpoint) ListModels() ([]Model, error) {
 	var models Models
 	err := e.do(e, "GET", "", nil, &models)
@@ -66,9 +67,10 @@ func (e *ModelsEndpoint) ListModels() ([]Model, error) {
 	return models.Data, nil
 }
 
-// GetModel
+// Retrieves a model instance, 
+// providing basic information about the model such as the owner and permissioning.
 //
-//	Gets the model by ID
+// [OpenAI Documentation]: https://beta.openai.com/docs/api-reference/models/retrieve
 func (e *ModelsEndpoint) RetrieveModel(id string) (*Model, error) {
 	var model Model
 	err := e.do(e, "GET", id, nil, &model)
