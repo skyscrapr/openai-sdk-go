@@ -1,4 +1,4 @@
-package test
+package openai_test
 
 import (
 	"log"
@@ -6,32 +6,32 @@ import (
 	"net/http/httptest"
 )
 
-const testAPI = "this-is-my-secure-token-do-not-steal!!"
-
-func GetTestToken() string {
-	return testAPI
-}
-
-type ServerTest struct {
+type TestServer struct {
+	HTTPServer *httptest.Server
 	handlers map[string]handler
 }
 type handler func(w http.ResponseWriter, r *http.Request)
 
-func NewTestServer() *ServerTest {
-	return &ServerTest{handlers: make(map[string]handler)}
+func NewTestServer() *TestServer {
+	ts := TestServer{
+		handlers: make(map[string]handler),
+	}
+	ts.HTTPServer = ts.enableHandlers()
+	return &ts
 }
 
-func (ts *ServerTest) RegisterHandler(path string, handler handler) {
+
+func (ts *TestServer) RegisterHandler(path string, handler handler) {
 	ts.handlers[path] = handler
 }
 
 // OpenAITestServer Creates a mocked OpenAI server which can pretend to handle requests during testing.
-func (ts *ServerTest) OpenAITestServer() *httptest.Server {
+func (ts *TestServer) enableHandlers() *httptest.Server {
 	return httptest.NewUnstartedServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		log.Printf("received request at path %q\n", r.URL.Path)
 
 		// check auth
-		if r.Header.Get("Authorization") != "Bearer "+GetTestToken() && r.Header.Get("api-key") != GetTestToken() {
+		if r.Header.Get("Authorization") != "Bearer " + GetTestAuthToken() {
 			w.WriteHeader(http.StatusUnauthorized)
 			return
 		}
