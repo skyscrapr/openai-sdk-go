@@ -1,6 +1,9 @@
 # OpenAI SDK for Go
 
-openai-sdk-go is an unofficial OpenAI SDK for the Go programming language.
+openai-sdk-go is an OpenAI SDK for the Go programming language.
+
+[![Go Reference](https://pkg.go.dev/badge/github.com/skyscrapr/openai-sdk-go.svg)](https://pkg.go.dev/github.com/skyscrapr/openai-sdk-go)
+[![Go Report Card](https://goreportcard.com/badge/github.com/skyscrapr/openai-sdk-go)](https://goreportcard.com/report/github.com/skyscrapr/openai-sdk-go)
 
 ## Installing
 
