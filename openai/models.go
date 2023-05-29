@@ -58,24 +58,19 @@ type Models struct {
 func (e *ModelsEndpoint) ListModels() ([]Model, error) {
 	var models Models
 	err := e.do(e, "GET", "", nil, &models)
-	if err != nil {
-		return nil, err
+	// TODO: This needs to move somewhere central
+	if err == nil && models.Object != "list" {
+		err = fmt.Errorf("expected 'list' object type, got %s", models.Object)
 	}
-	if models.Object != "list" {
-		return nil, fmt.Errorf("expected 'list' object type, got %s", models.Object)
-	}
-	return models.Data, nil
+	return models.Data, err
 }
 
-// Retrieves a model instance, 
+// Retrieves a model instance,
 // providing basic information about the model such as the owner and permissioning.
 //
 // [OpenAI Documentation]: https://beta.openai.com/docs/api-reference/models/retrieve
 func (e *ModelsEndpoint) RetrieveModel(id string) (*Model, error) {
 	var model Model
 	err := e.do(e, "GET", id, nil, &model)
-	if err != nil {
-		return nil, err
-	}
-	return &model, nil
+	return &model, err
 }

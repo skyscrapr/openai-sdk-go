@@ -48,7 +48,6 @@ func TestListModelsInvalidObject(t *testing.T) {
 	}
 }
 
-
 func TestRetrieveModel(t *testing.T) {
 	testModelID := "testModelID"
 	ts := openai_test.NewTestServer()

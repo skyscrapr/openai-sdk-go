@@ -13,7 +13,7 @@ func GetTestAuthToken() string {
 
 func NewTestClient(ts *TestServer) *openai.Client {
 	client := openai.NewClient(test_auth_token)
-	if (ts != nil) {
+	if ts != nil {
 		client.BaseURL, _ = url.Parse(ts.HTTPServer.URL)
 	}
 	return client
