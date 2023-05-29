@@ -1,5 +1,9 @@
 package openai
 
+import (
+	"fmt"
+)
+
 const modelsEndpoint = "/models/"
 
 // ModelsEndpoint - OpenAI Models Endpoint
@@ -42,11 +46,35 @@ type Permission struct {
 	IsBlocking         bool        `json:"is_blocking"`
 }
 
+
+type Models struct {
+	Object string `json:"object"`
+	Data []Model `json:"data"`
+}
+
 // ListModels
 //
 //	Lists the currently available models, and provides basic information about each one such as the owner and availability.
 func (e *ModelsEndpoint) ListModels() ([]Model, error) {
-	var models []Model
+	var models Models
 	err := e.do(e, "GET", "", nil, &models)
-	return models, err
+	if (err != nil) {
+		return nil, err
+	}
+	if (models.Object != "list") {
+		return nil, fmt.Errorf("expected 'list' object type, got %s", models.Object)
+	}
+	return models.Data, nil
+}
+
+// GetModel
+//
+//	Gets the model by ID
+func (e *ModelsEndpoint) GetModel(id string) (*Model, error) {
+	var model Model
+	err := e.do(e, "GET", id, nil, &model)
+	if (err != nil) {
+		return nil, err
+	}
+	return &model, nil
 }

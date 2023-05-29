@@ -7,6 +7,8 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"time"
+	"log"
 )
 
 const (
@@ -26,6 +28,7 @@ type Client struct {
 // NewClient creates new OpenAI client.
 func NewClient(authToken string) *Client {
 	c := &Client{
+		HTTPClient: &http.Client{Timeout: 30 * time.Second},
 		authToken: authToken,
 		UserAgent: "skyscrapr/openai-sdk-go",
 	}
@@ -85,24 +88,15 @@ func (c *Client) doRequest(req *http.Request, v any) error {
 	return decodeResponse(res.Body, v)
 }
 
-func decodeString(body io.Reader, output *string) error {
-	b, err := io.ReadAll(body)
-	if err != nil {
-		return err
-	}
-	*output = string(b)
-	return nil
-}
-
 func decodeResponse(body io.Reader, v any) error {
 	if v == nil {
 		return nil
 	}
-
-	if result, ok := v.(*string); ok {
-		return decodeString(body, result)
+	err := json.NewDecoder(body).Decode(v)
+	if err != nil {
+		log.Fatal(err)
 	}
-	return json.NewDecoder(body).Decode(v)
+	return nil
 }
 
 func (c *Client) handleErrorResp(resp *http.Response) error {
