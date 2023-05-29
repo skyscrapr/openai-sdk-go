@@ -8,7 +8,7 @@ import (
 
 type TestServer struct {
 	HTTPServer *httptest.Server
-	handlers map[string]handler
+	handlers   map[string]handler
 }
 type handler func(w http.ResponseWriter, r *http.Request)
 
@@ -20,7 +20,6 @@ func NewTestServer() *TestServer {
 	return &ts
 }
 
-
 func (ts *TestServer) RegisterHandler(path string, handler handler) {
 	ts.handlers[path] = handler
 }
@@ -31,7 +30,7 @@ func (ts *TestServer) enableHandlers() *httptest.Server {
 		log.Printf("received request at path %q\n", r.URL.Path)
 
 		// check auth
-		if r.Header.Get("Authorization") != "Bearer " + GetTestAuthToken() {
+		if r.Header.Get("Authorization") != "Bearer "+GetTestAuthToken() {
 			w.WriteHeader(http.StatusUnauthorized)
 			return
 		}

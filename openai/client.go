@@ -5,10 +5,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"net/url"
 	"time"
-	"log"
 )
 
 const (
@@ -29,8 +29,8 @@ type Client struct {
 func NewClient(authToken string) *Client {
 	c := &Client{
 		HTTPClient: &http.Client{Timeout: 30 * time.Second},
-		authToken: authToken,
-		UserAgent: "skyscrapr/openai-sdk-go",
+		authToken:  authToken,
+		UserAgent:  "skyscrapr/openai-sdk-go",
 	}
 	c.BaseURL, _ = url.Parse(apiURL)
 	return c
