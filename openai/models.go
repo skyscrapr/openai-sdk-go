@@ -69,7 +69,7 @@ func (e *ModelsEndpoint) ListModels() ([]Model, error) {
 // GetModel
 //
 //	Gets the model by ID
-func (e *ModelsEndpoint) GetModel(id string) (*Model, error) {
+func (e *ModelsEndpoint) RetrieveModel(id string) (*Model, error) {
 	var model Model
 	err := e.do(e, "GET", id, nil, &model)
 	if err != nil {

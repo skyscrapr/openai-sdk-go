@@ -28,7 +28,7 @@ func TestListModels(t *testing.T) {
 	}
 }
 
-func TestGetModel(t *testing.T) {
+func TestRetrieveModel(t *testing.T) {
 	testModelID := "testModelID"
 	ts := openai_test.NewTestServer()
 	ts.RegisterHandler("/v1/models/testModelID", func(w http.ResponseWriter, _ *http.Request) {
@@ -39,7 +39,7 @@ func TestGetModel(t *testing.T) {
 	defer ts.HTTPServer.Close()
 
 	client := openai_test.NewTestClient(ts)
-	model, err := client.Models().GetModel(testModelID)
+	model, err := client.Models().RetrieveModel(testModelID)
 	t.Helper()
 	if err != nil {
 		t.Error(err, "GetModel error")
