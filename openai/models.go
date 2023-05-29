@@ -4,19 +4,19 @@ import (
 	"fmt"
 )
 
-const modelsEndpoint = "/models/"
+const ModelsEndpointPath = "/models/"
 
 // ModelsEndpoint - OpenAI Models Endpoint
 //
 //	List and describe the various models available in the API.
-//	You can refer to the Models documentation to understand what models are available and the differences between them.
+//	You can refer to the [Models]: https://platform.openai.com/docs/models documentation to understand what models are available and the differences between them.
 type ModelsEndpoint struct {
 	*endpoint
 }
 
 // Models - Models Endpoint
 func (c *Client) Models() *ModelsEndpoint {
-	return &ModelsEndpoint{newEndpoint(c, modelsEndpoint)}
+	return &ModelsEndpoint{newEndpoint(c, ModelsEndpointPath)}
 }
 
 // Model - OpenAPI Model.

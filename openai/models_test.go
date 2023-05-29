@@ -24,9 +24,30 @@ func TestListModels(t *testing.T) {
 	_, err := client.Models().ListModels()
 	t.Helper()
 	if err != nil {
-		t.Error(err, "ListModels error")
+		t.Error(err, "TestListModels error")
 	}
 }
+
+func TestListModelsInvalidObject(t *testing.T) {
+	expectedError := "expected 'list' object type, got model"
+
+	ts := openai_test.NewTestServer()
+	ts.RegisterHandler("/v1/models", func(w http.ResponseWriter, _ *http.Request) {
+		resBytes, _ := json.Marshal(openai.Models{Object: "model", Data: nil})
+		fmt.Fprintln(w, string(resBytes))
+	})
+	ts.HTTPServer.Start()
+	defer ts.HTTPServer.Close()
+
+	client := openai_test.NewTestClient(ts)
+	_, err := client.Models().ListModels()
+	t.Helper()
+	if err != nil && err.Error() != expectedError {
+		t.Errorf("Unexpected error: %v , expected: %s", err, expectedError)
+		t.Fail()
+	}
+}
+
 
 func TestRetrieveModel(t *testing.T) {
 	testModelID := "testModelID"
