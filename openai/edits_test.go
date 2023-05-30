@@ -10,7 +10,7 @@ import (
 	"github.com/skyscrapr/openai-sdk-go/openai/test"
 )
 
-func TestCreateChatCompletion(t *testing.T) {
+func TestCreateEdit(t *testing.T) {
 	testModelID := "testModelID"
 	ts := openai_test.NewTestServer()
 	ts.RegisterHandler("/v1/chat/completions", func(w http.ResponseWriter, _ *http.Request) {
@@ -24,13 +24,11 @@ func TestCreateChatCompletion(t *testing.T) {
 
 	client := openai_test.NewTestClient(ts)
 
-	req := openai.ChatCompletionRequest{
-		Model:    testModelID,
-		Messages: []string{"test"},
-		Role:     "user",
-		Content:  "What is the capital of France?",
+	req := openai.EditRequest{
+		Model:       testModelID,
+		Instruction: "test",
 	}
-	_, err := client.Chat().CreateChatCompletion(&req)
+	_, err := client.Edits().CreateEdit(&req)
 	t.Helper()
 	if err != nil {
 		t.Error(err, "CreateChatCompletion error")

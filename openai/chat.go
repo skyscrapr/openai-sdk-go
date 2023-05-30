@@ -67,11 +67,12 @@ type ChatCompletionResponse struct {
 	Id      string `json:"id"`
 	Object  string `json:"object"`
 	Created int    `json:"created"`
-	Model   string `json:"model"`
 	Choices []struct {
-		Text         string `json:"text"`
-		Index        int    `json:"index"`
-		LogProbs     int    `json:"logprobs,omitempty"`
+		Index   int `json:"index"`
+		Message struct {
+			Role    string `json:"role"`
+			Content string `json:"content"`
+		} `json:"message"`
 		FinishReason string `json:"finish_reason"`
 	} `json:"choices"`
 	Usage struct {
