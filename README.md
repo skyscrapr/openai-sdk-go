@@ -22,10 +22,7 @@ go get -u github.com/skyscrapr/openai-sdk-go
 
 This SDK wraps the OpenAI API. Please check the [official vendor documentation](https://platform.openai.com/docs/api-reference) for more detail.
 
-The following endpoints have been implemented:
-* Models
-
 ## Known Issues & Limitations
 
-This is a new project and therefore not all resources are currently implemented.
+This is a new implementation.
 Please raise an issue for any fixes or missing implementations.
