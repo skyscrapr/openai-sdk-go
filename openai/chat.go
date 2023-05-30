@@ -1,6 +1,6 @@
 package openai
 
-const ChatEndpointPath = "/chat/completions/"
+const ChatEndpointPath = "/chat/"
 
 // Completions Endpoint
 //
@@ -87,6 +87,6 @@ type ChatCompletionResponse struct {
 // [OpenAI Documentation]: https://platform.openai.com/docs/api-reference/chat/create
 func (e *ChatEndpoint) CreateChatCompletion(req *ChatCompletionRequest) (*ChatCompletionResponse, error) {
 	var resp ChatCompletionResponse
-	err := e.do(e, "POST", "", req, &resp)
+	err := e.do(e, "POST", "completions", req, &resp)
 	return &resp, err
 }
