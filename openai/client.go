@@ -61,17 +61,15 @@ func (c *Client) newRequest(method string, u *url.URL, body interface{}) (*http.
 	if err != nil {
 		return nil, err
 	}
-	req.Header.Set("Accept", "application/json; charset=utf-8")
-	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", c.authToken))
 	// req.Header.Set("User-Agent", c.UserAgent)
-
+	req.Header.Set("Accept", "application/json")
+	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", c.authToken))
+	if body != nil {
+		req.Header.Set("Content-Type", "application/json")
+	}
 	if len(c.OrganizationID) > 0 {
 		req.Header.Set("OpenAI-Organization", c.OrganizationID)
 	}
-
-	// if body != nil {
-	// 	req.Header.Set("Content-Type", "application/json")
-	// }
 
 	return req, nil
 }
