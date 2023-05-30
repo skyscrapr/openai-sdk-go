@@ -74,3 +74,19 @@ func (e *ModelsEndpoint) RetrieveModel(id string) (*Model, error) {
 	err := e.do(e, "GET", id, nil, &model)
 	return &model, err
 }
+
+// Delete a fine-tuned model. You must have the Owner role in your organization.
+// [OpenAI Documentation]: https://platform.openai.com/docs/api-reference/fine-tunes/delete-model
+func (e *ModelsEndpoint) deleteFineTuneModel(id string) (bool, error) {
+	type DeleteResponse struct {
+		Id      string `json:"id"`
+		Object  string `json:"object"`
+		Deleted bool   `json:"deleted"`
+	}
+	var resp DeleteResponse
+	err := e.do(e, "DELETE", id, nil, &resp)
+	if err != nil {
+		return false, err
+	}
+	return resp.Deleted, nil
+}
