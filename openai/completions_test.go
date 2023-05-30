@@ -25,7 +25,7 @@ func TestCreateCompletion(t *testing.T) {
 	client := openai_test.NewTestClient(ts)
 
 	req := openai.CompletionRequest{
-		Model:     "ada",
+		Model: "ada",
 	}
 	req.Prompt = []string{"Lorem ipsum"}
 	resp, err := client.Completions().CreateCompletion(&req)
