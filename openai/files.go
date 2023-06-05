@@ -21,8 +21,8 @@ func (c *Client) Files() *FilesEndpoint {
 type File struct {
 	Id        string `json:"id"`
 	Object    string `json:"object"`
-	Bytes     int    `json:"bytes"`
-	CreatedAt int    `json:"created_at"`
+	Bytes     int64  `json:"bytes"`
+	CreatedAt int64  `json:"created_at"`
 	Filename  string `json:"filename"`
 	Purpose   string `json:"fine-tune"`
 }
