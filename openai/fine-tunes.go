@@ -1,5 +1,7 @@
 package openai
 
+import "fmt"
+
 const FineTunesEndpointPath = "/fine-tunes/"
 
 // FineTunes Endpoint
@@ -112,12 +114,21 @@ func (e *FineTunesEndpoint) CreateFineTune(req *CreateFineTunesRequest) (*FineTu
 	return &fineTune, err
 }
 
+type FineTunes struct {
+	Object string     `json:"object"`
+	Data   []FineTune `json:"data"`
+}
+
 // List your organization's fine-tuning jobs
 // [OpenAI Documentation]: https://platform.openai.com/docs/api-reference/fine-tunes
 func (e *FineTunesEndpoint) ListFineTunes() ([]FineTune, error) {
-	var fineTunes []FineTune
+	var fineTunes FineTunes
 	err := e.do(e, "GET", "", nil, &fineTunes)
-	return fineTunes, err
+	// TODO: This needs to move somewhere central
+	if err == nil && fineTunes.Object != "list" {
+		err = fmt.Errorf("expected 'list' object type, got %s", fineTunes.Object)
+	}
+	return fineTunes.Data, err
 }
 
 // Gets info about the fine-tune job. [Learn more about Fine-tuning]: https://platform.openai.com/docs/guides/fine-tuning
