@@ -19,18 +19,18 @@ type FineTune struct {
 	Id        string `json:"id"`
 	Object    string `json:"object"`
 	Model     string `json:"model"`
-	CreatedAt int    `json:"created_at"`
+	CreatedAt int64  `json:"created_at"`
 	Events    []struct {
 		Object    string `json:"object"`
-		CreatedAt int    `json:"created_at"`
+		CreatedAt int64  `json:"created_at"`
 		Level     string `json:"level"`
 		Message   string `json:"message"`
 	} `json:"events"`
 	FineTunedModel string `json:"fine_tuned_model"`
 	Hyperparams    []struct {
-		BatchSize              int     `json:"batch_size"`
+		BatchSize              int64   `json:"batch_size"`
 		LearningRateMultiplier float32 `json:"learning_rate_multiplier"`
-		NEpochs                int     `json:"n_epochs"`
+		NEpochs                int64   `json:"n_epochs"`
 		PromptLossWeight       float32 `json:"prompt_loss_weight"`
 	} `json:"hyperparams"`
 	OrganizationId  string `json:"organization_id"`
@@ -38,7 +38,7 @@ type FineTune struct {
 	Status          string `json:"status"`
 	ValidationFiles []File `json:"validation_files"`
 	TrainingFiles   []File `json:"training_files"`
-	UpdatedAt       int    `json:"updated_at"`
+	UpdatedAt       int64  `json:"updated_at"`
 }
 
 type FineTuneEvents struct {
@@ -70,19 +70,19 @@ type CreateFineTunesRequest struct {
 	Model string `json:"model,omitempty"`
 	// Defaults to 4
 	// The number of epochs to train the model for. An epoch refers to one full cycle through the training dataset.
-	NEpochs int `json:"n_epochs,omitempty"`
+	NEpochs int64 `json:"n_epochs,omitempty"`
 	// Defaults to null
 	// The batch size to use for training. The batch size is the number of training examples used to train a single forward and backward pass.
 	// By default, the batch size will be dynamically configured to be ~0.2% of the number of examples in the training set, capped at 256 - in general, we've found that larger batch sizes tend to work better for larger datasets.
-	BatchSize int `json:"batch_size,omitempty"`
+	BatchSize int64 `json:"batch_size,omitempty"`
 	// Defaults to null
 	// The learning rate multiplier to use for training. The fine-tuning learning rate is the original learning rate used for pretraining multiplied by this value.
 	// By default, the learning rate multiplier is the 0.05, 0.1, or 0.2 depending on final batch_size (larger learning rates tend to perform better with larger batch sizes). We recommend experimenting with values in the range 0.02 to 0.2 to see what produces the best results.
-	LearningRateMultiplier int `json:"learning_rate_multiplier,omitempty"`
+	LearningRateMultiplier int64 `json:"learning_rate_multiplier,omitempty"`
 	// Defaults to 0.01
 	// The weight to use for loss on the prompt tokens. This controls how much the model tries to learn to generate the prompt (as compared to the completion which always has a weight of 1.0), and can add a stabilizing effect to training when completions are short.
 	// If prompts are extremely long (relative to completions), it may make sense to reduce this weight so as to avoid over-prioritizing learning the prompt.
-	PromptLossWeight int `json:"prompt_loss_weight,omitempty"`
+	PromptLossWeight int64 `json:"prompt_loss_weight,omitempty"`
 	// 	Defaults to false
 	// If set, we calculate classification-specific metrics such as accuracy and F-1 score using the validation set at the end of every epoch. These metrics can be viewed in the results file.
 	// In order to compute classification metrics, you must provide a validation_file. Additionally, you must specify classification_n_classes for multiclass classification or classification_positive_class for binary classification.
@@ -90,7 +90,7 @@ type CreateFineTunesRequest struct {
 	// Defaults to null
 	// The number of classes in a classification task.
 	// This parameter is required for multiclass classification.
-	ClassificationNClasses int `json:"classification_n_classes,omitempty"`
+	ClassificationNClasses int64 `json:"classification_n_classes,omitempty"`
 	// The positive class in binary classification.
 	// This parameter is needed to generate precision, recall, and F1 metrics when doing binary classification.
 	ClassificationPositiveClass string `json:"classification_positive_class,omitempty"`
