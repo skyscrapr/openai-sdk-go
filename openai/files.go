@@ -1,7 +1,13 @@
 package openai
 
 import (
+	"bytes"
 	"fmt"
+	"io"
+	"mime/multipart"
+	"net/http"
+	"os"
+	"path/filepath"
 )
 
 const FilesEndpointPath = "/files/"
@@ -54,10 +60,49 @@ type UploadFileRequest struct {
 // Currently, the size of all the files uploaded by one organization can be up to 1 GB.
 // Please contact us if you need to increase the storage limit.
 // [OpenAI Documentation]: https://platform.openai.com/docs/api-reference/files
-func (e *FilesEndpoint) UploadFile(req *UploadFileRequest) (File, error) {
+func (e *FilesEndpoint) UploadFile(req *UploadFileRequest) (*File, error) {
+	var b bytes.Buffer
+	writer := multipart.NewWriter(&b)
+	fileData, err := os.Open(req.File)
+	if err != nil {
+		return nil, err
+	}
+	defer fileData.Close()
+	err = writer.WriteField("purpose", req.Purpose)
+	if err != nil {
+		return nil, err
+	}
+	fieldWriter, err := writer.CreateFormFile("file", filepath.Base(fileData.Name()))
+	if err != nil {
+		return nil, err
+	}
+	_, err = io.Copy(fieldWriter, fileData)
+	if err != nil {
+		return nil, err
+	}
+	writer.Close()
+	u, err := e.buildURL("")
+	if err != nil {
+		return nil, err
+	}
+	r, err := http.NewRequest("POST", u.String(), &b)
+	if err != nil {
+		return nil, err
+	}
+	//r.Header.Set("Accept", "application/json; charset=utf-8")
+	r.Header.Set("Authorization", fmt.Sprintf("Bearer %s", e.authToken))
+	if len(e.OrganizationID) > 0 {
+		r.Header.Set("OpenAI-Organization", e.OrganizationID)
+	}
+	//r, err := e.newRequest("POST", u, &b)
+	// if err != nil {
+	// 	return nil, err
+	// }
+	r.Header.Set("Content-Type", writer.FormDataContentType())
+
 	var file File
-	err := e.do(e, "POST", "", req, &file)
-	return file, err
+	err = e.doRequest(r, &file)
+	return &file, err
 }
 
 type DeleteFileResponse struct {

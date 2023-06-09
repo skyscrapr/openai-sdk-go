@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"os"
+	"path"
 	"testing"
 
 	"github.com/skyscrapr/openai-sdk-go/openai"
@@ -37,6 +39,24 @@ func TestListFiles(t *testing.T) {
 	if err != nil {
 		t.Error(err, "ListFiles error")
 		t.Fail()
+	}
+}
+
+func TestUploadFile2(t *testing.T) {
+	fileDir, _ := os.Getwd()
+	fileName := "upload-file.txt"
+	filePath := path.Join(fileDir, fileName)
+	auth_token := os.Getenv("OPENAI_API_KEY")
+	client := openai.NewClient(auth_token)
+	_, err := client.Files().UploadFile(
+		&openai.UploadFileRequest{
+			File:    filePath,
+			Purpose: "fine-tune",
+		},
+	)
+	t.Helper()
+	if err != nil {
+		t.Error(err, "UploadFile error")
 	}
 }
 
