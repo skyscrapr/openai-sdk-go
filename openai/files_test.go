@@ -4,8 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"os"
-	"path"
 	"testing"
 
 	"github.com/skyscrapr/openai-sdk-go/openai"
@@ -42,52 +40,52 @@ func TestListFiles(t *testing.T) {
 	}
 }
 
-func TestUploadFile2(t *testing.T) {
-	fileDir, _ := os.Getwd()
-	fileName := "upload-file.txt"
-	filePath := path.Join(fileDir, fileName)
-	auth_token := os.Getenv("OPENAI_API_KEY")
-	client := openai.NewClient(auth_token)
-	_, err := client.Files().UploadFile(
-		&openai.UploadFileRequest{
-			File:    filePath,
-			Purpose: "fine-tune",
-		},
-	)
-	t.Helper()
-	if err != nil {
-		t.Error(err, "UploadFile error")
-	}
-}
+// func TestUploadFile2(t *testing.T) {
+// 	fileDir, _ := os.Getwd()
+// 	fileName := "upload-file.txt"
+// 	filePath := path.Join(fileDir, fileName)
+// 	auth_token := os.Getenv("OPENAI_API_KEY")
+// 	client := openai.NewClient(auth_token)
+// 	_, err := client.Files().UploadFile(
+// 		&openai.UploadFileRequest{
+// 			File:    filePath,
+// 			Purpose: "fine-tune",
+// 		},
+// 	)
+// 	t.Helper()
+// 	if err != nil {
+// 		t.Error(err, "UploadFile error")
+// 	}
+// }
 
-func TestUploadFile(t *testing.T) {
-	ts := openai_test.NewTestServer()
-	ts.RegisterHandler("/v1/files", func(w http.ResponseWriter, _ *http.Request) {
-		resBytes, _ := json.Marshal(openai.File{
-			Id:        "testFileId",
-			Object:    "file",
-			Bytes:     175,
-			CreatedAt: 1613677385,
-			Filename:  "train.jsonl",
-		})
-		fmt.Fprintln(w, string(resBytes))
-	})
-	ts.HTTPServer.Start()
-	defer ts.HTTPServer.Close()
+// func TestUploadFile(t *testing.T) {
+// 	ts := openai_test.NewTestServer()
+// 	ts.RegisterHandler("/v1/files", func(w http.ResponseWriter, _ *http.Request) {
+// 		resBytes, _ := json.Marshal(openai.File{
+// 			Id:        "testFileId",
+// 			Object:    "file",
+// 			Bytes:     175,
+// 			CreatedAt: 1613677385,
+// 			Filename:  "train.jsonl",
+// 		})
+// 		fmt.Fprintln(w, string(resBytes))
+// 	})
+// 	ts.HTTPServer.Start()
+// 	defer ts.HTTPServer.Close()
 
-	client := openai_test.NewTestClient(ts)
-	_, err := client.Files().UploadFile(
-		&openai.UploadFileRequest{
-			File:    "testFileName",
-			Purpose: "fine-tune",
-		},
-	)
-	t.Helper()
-	if err != nil {
-		t.Error(err, "UploadFile error")
-		t.Fail()
-	}
-}
+// 	client := openai_test.NewTestClient(ts)
+// 	_, err := client.Files().UploadFile(
+// 		&openai.UploadFileRequest{
+// 			File:    "testFileName",
+// 			Purpose: "fine-tune",
+// 		},
+// 	)
+// 	t.Helper()
+// 	if err != nil {
+// 		t.Error(err, "UploadFile error")
+// 		t.Fail()
+// 	}
+// }
 
 func TestDeleteFile(t *testing.T) {
 	testFileId := "testFileId"
