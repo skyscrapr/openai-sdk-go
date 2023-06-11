@@ -30,7 +30,7 @@ type File struct {
 	Bytes     int64  `json:"bytes"`
 	CreatedAt int64  `json:"created_at"`
 	Filename  string `json:"filename"`
-	Purpose   string `json:"fine-tune"`
+	Purpose   string `json:"purpose"`
 }
 
 type Files struct {
