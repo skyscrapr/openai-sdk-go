@@ -115,7 +115,7 @@ type DeleteFileResponse struct {
 // [OpenAI Documentation]: https://platform.openai.com/docs/api-reference/files
 func (e *FilesEndpoint) DeleteFile(fileId string) (bool, error) {
 	var resp DeleteFileResponse
-	err := e.do(e, "POST", fileId, nil, &resp)
+	err := e.do(e, "DELETE", fileId, nil, &resp)
 	if err != nil {
 		return false, err
 	}
