@@ -29,11 +29,11 @@ type FineTune struct {
 		Message   string `json:"message"`
 	} `json:"events"`
 	FineTunedModel string `json:"fine_tuned_model"`
-	Hyperparams    []struct {
+	Hyperparams    struct {
 		BatchSize              int64   `json:"batch_size"`
-		LearningRateMultiplier float32 `json:"learning_rate_multiplier"`
+		LearningRateMultiplier float64 `json:"learning_rate_multiplier"`
 		NEpochs                int64   `json:"n_epochs"`
-		PromptLossWeight       float32 `json:"prompt_loss_weight"`
+		PromptLossWeight       float64 `json:"prompt_loss_weight"`
 	} `json:"hyperparams"`
 	OrganizationId  string `json:"organization_id"`
 	ResultFiles     []File `json:"result_files"`

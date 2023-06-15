@@ -24,5 +24,4 @@ This SDK wraps the OpenAI API. Please check the [official vendor documentation](
 
 ## Known Issues & Limitations
 
-This is a new implementation.
 Please raise an issue for any fixes or missing implementations.
