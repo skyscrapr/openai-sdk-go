@@ -89,15 +89,10 @@ func (e *FilesEndpoint) UploadFile(req *UploadFileRequest) (*File, error) {
 	if err != nil {
 		return nil, err
 	}
-	//r.Header.Set("Accept", "application/json; charset=utf-8")
 	r.Header.Set("Authorization", fmt.Sprintf("Bearer %s", e.authToken))
 	if len(e.OrganizationID) > 0 {
 		r.Header.Set("OpenAI-Organization", e.OrganizationID)
 	}
-	//r, err := e.newRequest("POST", u, &b)
-	// if err != nil {
-	// 	return nil, err
-	// }
 	r.Header.Set("Content-Type", writer.FormDataContentType())
 
 	var file File

@@ -1,6 +1,10 @@
 package openai
 
-import "fmt"
+import (
+	"context"
+	"fmt"
+	"time"
+)
 
 const FineTunesEndpointPath = "/fine-tunes/"
 
@@ -154,6 +158,27 @@ func (e *FineTunesEndpoint) ListFineTuneEvents(fineTuneId string) ([]FineTuneEve
 	var fineTuneEvents FineTuneEvents
 	err := e.do(e, "POST", fineTuneId+"/events", nil, fineTuneEvents)
 	return fineTuneEvents.Data, err
+}
+
+// Get streamed status updates for a fine-tune job.
+// [OpenAI Documentation]: https://platform.openai.com/docs/api-reference/fine-tunes
+func (e *FineTunesEndpoint) SubscribeFineTuneEvents(fineTuneId string, eventHandler EventHandler, errorHandler EventErrorHandler) error {
+	u, err := e.buildURL(fineTuneId + "/events?stream=true")
+	if err != nil {
+		return err
+	}
+	req, err := e.newRequest("GET", u, nil)
+	if err != nil {
+		return err
+	}
+	// req.Header.Set("Connection", "keep-alive")
+
+	c := NewSSEClient(u.String(), "")
+	c.HTTPClient.Timeout = 0
+	c.Headers = req.Header
+	ctx, _ := context.WithTimeout(context.Background(), time.Hour)
+
+	return c.Start(ctx, eventHandler, errorHandler)
 }
 
 // Delete a fine-tuned model. You must have the Owner role in your organization.
