@@ -175,8 +175,8 @@ func (e *FineTunesEndpoint) SubscribeFineTuneEvents(fineTuneId string, eventHand
 	c := NewSSEClient(u.String(), "")
 	c.HTTPClient.Timeout = 0
 	c.Headers = req.Header
-	ctx, _ := context.WithTimeout(context.Background(), time.Hour)
-
+	ctx, cancel := context.WithTimeout(context.Background(), time.Hour)
+	defer cancel()
 	return c.Start(ctx, eventHandler, errorHandler)
 }
 
