@@ -3,7 +3,6 @@ package openai
 import (
 	"context"
 	"fmt"
-	sseclient "github.com/skyscrapr/openai-sseclient-go"
 	"time"
 )
 
@@ -163,7 +162,7 @@ func (e *FineTunesEndpoint) ListFineTuneEvents(fineTuneId string) ([]FineTuneEve
 
 // Get streamed status updates for a fine-tune job.
 // [OpenAI Documentation]: https://platform.openai.com/docs/api-reference/fine-tunes
-func (e *FineTunesEndpoint) SubscribeFineTuneEvents(fineTuneId string, eventHandler sseclient.EventHandler, errorHandler sseclient.EventErrorHandler) error {
+func (e *FineTunesEndpoint) SubscribeFineTuneEvents(fineTuneId string, eventHandler EventHandler, errorHandler EventErrorHandler) error {
 	u, err := e.buildURL(fineTuneId + "/events?stream=true")
 	if err != nil {
 		return err
@@ -173,7 +172,7 @@ func (e *FineTunesEndpoint) SubscribeFineTuneEvents(fineTuneId string, eventHand
 		return err
 	}
 
-	c := sseclient.NewSSEClient(u.String(), "")
+	c := NewSSEClient(u.String(), "")
 	c.HTTPClient.Timeout = 0
 	c.Headers = req.Header
 	ctx, _ := context.WithTimeout(context.Background(), time.Hour)
@@ -185,5 +184,8 @@ func (e *FineTunesEndpoint) SubscribeFineTuneEvents(fineTuneId string, eventHand
 // This is actually implemented in the models endpoint
 // [OpenAI Documentation]: https://platform.openai.com/docs/api-reference/fine-tunes/delete-model
 func (e *FineTunesEndpoint) DeleteFineTuneModel(modelId string) (bool, error) {
+
+	// delete results file
+	// if completed then delete model
 	return e.Client.Models().deleteFineTuneModel(modelId)
 }
