@@ -3,8 +3,8 @@ package openai
 import (
 	"context"
 	"fmt"
-	"time"
 	sseclient "github.com/skyscrapr/openai-sseclient-go"
+	"time"
 )
 
 const FineTunesEndpointPath = "/fine-tunes/"

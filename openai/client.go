@@ -57,7 +57,7 @@ func (c *Client) newRequest(method string, u *url.URL, body interface{}) (*http.
 			return nil, err
 		}
 	}
-	req, err := http.NewRequest(method, u.String(), buf)
+	req, err := http.NewRequest(method, u.EscapedPath(), buf)
 	if err != nil {
 		return nil, err
 	}
