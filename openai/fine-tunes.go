@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"time"
+	sseclient "github.com/skyscrapr/openai-sseclient-go"
 )
 
 const FineTunesEndpointPath = "/fine-tunes/"
@@ -162,7 +163,7 @@ func (e *FineTunesEndpoint) ListFineTuneEvents(fineTuneId string) ([]FineTuneEve
 
 // Get streamed status updates for a fine-tune job.
 // [OpenAI Documentation]: https://platform.openai.com/docs/api-reference/fine-tunes
-func (e *FineTunesEndpoint) SubscribeFineTuneEvents(fineTuneId string, eventHandler EventHandler, errorHandler EventErrorHandler) error {
+func (e *FineTunesEndpoint) SubscribeFineTuneEvents(fineTuneId string, eventHandler sseclient.EventHandler, errorHandler sseclient.EventErrorHandler) error {
 	u, err := e.buildURL(fineTuneId + "/events?stream=true")
 	if err != nil {
 		return err
@@ -171,9 +172,8 @@ func (e *FineTunesEndpoint) SubscribeFineTuneEvents(fineTuneId string, eventHand
 	if err != nil {
 		return err
 	}
-	// req.Header.Set("Connection", "keep-alive")
 
-	c := NewSSEClient(u.String(), "")
+	c := sseclient.NewSSEClient(u.String(), "")
 	c.HTTPClient.Timeout = 0
 	c.Headers = req.Header
 	ctx, _ := context.WithTimeout(context.Background(), time.Hour)
