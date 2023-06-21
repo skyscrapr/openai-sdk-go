@@ -2,6 +2,7 @@ package openai
 
 import (
 	"fmt"
+	"net/url"
 )
 
 const ModelsEndpointPath = "/models/"
@@ -84,7 +85,7 @@ func (e *ModelsEndpoint) deleteFineTuneModel(id string) (bool, error) {
 		Deleted bool   `json:"deleted"`
 	}
 	var resp DeleteResponse
-	err := e.do(e, "DELETE", id, nil, &resp)
+	err := e.do(e, "DELETE", url.QueryEscape(id), nil, &resp)
 	if err != nil {
 		return false, err
 	}

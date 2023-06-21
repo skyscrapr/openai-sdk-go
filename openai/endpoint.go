@@ -30,7 +30,7 @@ func newEndpoint(c *Client, endpointPath string) *endpoint {
 }
 
 func (e *endpoint) buildURL(endpointPath string) (*url.URL, error) {
-	u, err := url.Parse(url.QueryEscape(endpointPath))
+	u, err := url.Parse(endpointPath)
 	if err != nil {
 		return nil, err
 	}
