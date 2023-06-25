@@ -167,10 +167,17 @@ func (e *FineTunesEndpoint) SubscribeFineTuneEvents(fineTuneId string, eventHand
 	if err != nil {
 		return err
 	}
+	req, err := e.newRequest("GET", u, nil)
+	if err != nil {
+		return err
+	}
 
+	c := NewSSEClient(u.String(), "")
+	c.HTTPClient.Timeout = 0
+	c.Headers = req.Header
 	ctx, cancel := context.WithTimeout(context.Background(), time.Hour)
 	defer cancel()
-	return e.stream(ctx, u.String(), eventHandler, errorHandler)
+	return c.Start(ctx, eventHandler, errorHandler)
 }
 
 // Delete a fine-tuned model. You must have the Owner role in your organization.
