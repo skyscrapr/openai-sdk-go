@@ -2,8 +2,8 @@ package openai
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
-	"time"
 )
 
 const FineTunesEndpointPath = "/fine-tunes/"
@@ -58,6 +58,13 @@ type FineTuneEvent struct {
 	Level     string `json:"level"`
 	Message   string `json:"message"`
 }
+
+// EventHandler is a callback that gets called every time event on the SSE
+// stream is received. Error returned from handler function will be passed to
+// the error handler.
+//
+// Users of this package have to provide this function implementation.
+type FineTuneEventHandler func(e *FineTuneEvent) error
 
 type CreateFineTunesRequest struct {
 	// The ID of an uploaded file that contains training data.
@@ -162,7 +169,7 @@ func (e *FineTunesEndpoint) ListFineTuneEvents(fineTuneId string) ([]FineTuneEve
 
 // Get streamed status updates for a fine-tune job.
 // [OpenAI Documentation]: https://platform.openai.com/docs/api-reference/fine-tunes
-func (e *FineTunesEndpoint) SubscribeFineTuneEvents(fineTuneId string, eventHandler EventHandler, errorHandler EventErrorHandler) error {
+func (e *FineTunesEndpoint) SubscribeFineTuneEvents(fineTuneId string, eventHandler FineTuneEventHandler) error {
 	u, err := e.buildURL(fineTuneId + "/events?stream=true")
 	if err != nil {
 		return err
@@ -173,11 +180,18 @@ func (e *FineTunesEndpoint) SubscribeFineTuneEvents(fineTuneId string, eventHand
 	}
 
 	c := NewSSEClient(u.String(), "")
-	c.HTTPClient.Timeout = 0
+	// c.HTTPClient.Timeout = 0
 	c.Headers = req.Header
-	ctx, cancel := context.WithTimeout(context.Background(), time.Hour)
-	defer cancel()
-	return c.Start(ctx, eventHandler, errorHandler)
+	return c.Start(context.TODO(),
+		func(event *SSEEvent) error {
+			var fineTuneEvent FineTuneEvent
+			err := json.Unmarshal([]byte(event.Data), &fineTuneEvent)
+			eventHandler(&fineTuneEvent)
+			return err
+		},
+		func(err error) error {
+			return err
+		})
 }
 
 // Delete a fine-tuned model. You must have the Owner role in your organization.

@@ -93,6 +93,7 @@ func NewSSEClient(url, lastEventID string) *SSEClient {
 		URL:         url,
 		LastEventID: lastEventID,
 		Retry:       2 * time.Second,
+		//		HTTPClient: &http.Client{},
 		HTTPClient: &http.Client{
 			Transport: &http.Transport{
 				TLSClientConfig: &tls.Config{
@@ -113,38 +114,6 @@ type StreamMessage struct {
 
 type SSEEvent struct {
 	Data string
-}
-
-// Stream is non-blocking SSE stream consumption mode where events are passed
-// through a channel. Stream can be stopped by cancelling context.
-//
-// Parameter buf controls returned stream channel buffer size. Buffer size of 0
-// is a good default.
-func (c *SSEClient) Stream(ctx context.Context, buf int) <-chan StreamMessage {
-	ch := make(chan StreamMessage, buf)
-	errorFn := func(err error) error {
-		select {
-		case ch <- StreamMessage{Err: err}:
-			return nil
-		case <-ctx.Done():
-			return ctx.Err()
-		}
-	}
-
-	eventFn := func(e *SSEEvent) error {
-		select {
-		case ch <- StreamMessage{Event: e}:
-		case <-ctx.Done():
-		}
-		return nil
-	}
-
-	go func() {
-		defer close(ch)
-		c.Start(ctx, eventFn, errorFn)
-	}()
-
-	return ch
 }
 
 // Start connects to the SSE stream. This function will block until SSE stream
@@ -226,7 +195,6 @@ func (c *SSEClient) connect(ctx context.Context, eventFn EventHandler) error {
 
 	switch resp.StatusCode {
 	case http.StatusOK:
-		// we do not support BOM in sse streams, or \r line separators.
 		r := bufio.NewReader(resp.Body)
 		for {
 			event, err := c.parseEvent(r)
@@ -273,6 +241,14 @@ func (c *SSEClient) parseEvent(r *bufio.Reader) (*SSEEvent, error) {
 			return nil, err
 		}
 		line = strings.TrimSpace(line)
+		// eat the extra \n char
+		ch, err := r.ReadByte()
+		if err != nil {
+			return nil, ErrorMalformedEvent
+		}
+		if ch != '\n' {
+			return nil, ErrorMalformedEvent
+		}
 
 		if strings.HasPrefix(line, "data:") {
 			line = strings.TrimPrefix(line, "data:")
