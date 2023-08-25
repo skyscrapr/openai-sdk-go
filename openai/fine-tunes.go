@@ -169,7 +169,7 @@ func (e *FineTunesEndpoint) ListFineTuneEvents(fineTuneId string) ([]FineTuneEve
 
 // Get streamed status updates for a fine-tune job.
 // [OpenAI Documentation]: https://platform.openai.com/docs/api-reference/fine-tunes
-func (e *FineTunesEndpoint) SubscribeFineTuneEvents(fineTuneId string, eventHandler FineTuneEventHandler) error {
+func (e *FineTunesEndpoint) SubscribeFineTuneEvents(ctx context.Context, fineTuneId string, eventHandler FineTuneEventHandler) error {
 	u, err := e.buildURL(fineTuneId + "/events?stream=true")
 	if err != nil {
 		return err
@@ -182,7 +182,7 @@ func (e *FineTunesEndpoint) SubscribeFineTuneEvents(fineTuneId string, eventHand
 	c := NewSSEClient(u.String(), "")
 	// c.HTTPClient.Timeout = 0
 	c.Headers = req.Header
-	return c.Start(context.TODO(),
+	return c.Start(ctx,
 		func(event *SSEEvent) error {
 			var fineTuneEvent FineTuneEvent
 			err := json.Unmarshal([]byte(event.Data), &fineTuneEvent)
