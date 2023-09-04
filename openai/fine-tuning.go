@@ -37,7 +37,7 @@ type FineTuningJob struct {
 	TrainingFile   string   `json:"training_file"`
 	ValidationFile *string  `json:"validation_file"`
 	ResultFiles    []string `json:"result_files"`
-	TrainedTokens  int64    `json:"trained_tokens,omitempty"`
+	TrainedTokens  int64    `json:"trained_tokens"`
 }
 
 type FineTuningEvents struct {
@@ -81,7 +81,7 @@ type CreateFineTuningJobRequest struct {
 	Model string `json:"model,omitempty" binding:"required"`
 
 	// The hyperparameters used for the fine-tuning job.
-	Hyperparameters struct {
+	Hyperparameters *struct {
 		// The number of epochs to train the model for. An epoch refers to one full cycle through the training dataset.
 		NEpochs int64 `json:"n_epochs,omitempty"`
 	} `json:"hyperparameters,omitempty"`
@@ -97,6 +97,8 @@ type CreateFineTuningJobRequest struct {
 // Learn more about Fine-tuning
 // [OpenAI Documentation]: https://platform.openai.com/docs/api-reference/fine-tunes
 func (e *FineTuningEndpoint) CreateFineTuningJob(req *CreateFineTuningJobRequest) (*FineTuningJob, error) {
+	// if req.Hyperparameters.NEpochs
+
 	var fineTuningJob FineTuningJob
 	err := e.do(e, "POST", "jobs", req, nil, &fineTuningJob)
 	return &fineTuningJob, err

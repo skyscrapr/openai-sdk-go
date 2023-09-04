@@ -12,7 +12,7 @@ import (
 
 func TestCreateFineTuningJob(t *testing.T) {
 	ts := openai_test.NewTestServer()
-	ts.RegisterHandler("/v1/fine-tuning/jobs", func(w http.ResponseWriter, _ *http.Request) {
+	ts.RegisterHandler("/v1/fine_tuning/jobs", func(w http.ResponseWriter, _ *http.Request) {
 		resBytes, _ := json.Marshal(openai.FineTuningJob{
 			Id:     "test_id",
 			Object: "fine_tuning.job",
