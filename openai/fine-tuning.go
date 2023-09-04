@@ -35,7 +35,7 @@ type FineTuningJob struct {
 		NEpochs int64 `json:"n_epochs,omitempty"`
 	} `json:"hyperparams,omitempty"`
 	TrainingFile   string   `json:"training_file"`
-	ValidationFile string   `json:"validation_file"`
+	ValidationFile *string  `json:"validation_file"`
 	ResultFiles    []string `json:"result_files"`
 	TrainedTokens  int64    `json:"trained_tokens,omitempty"`
 }
@@ -153,8 +153,15 @@ type ListFineTuningEventsRequest struct {
 
 // Get status updates for a fine-tuning job.
 // Returns a list of fine-tuning event objects.
-func (e *FineTuningEndpoint) ListFineTuningEvents(fineTuningJobId string, req ListFineTuningEventsRequest) ([]FineTuningEvent, error) {
+func (e *FineTuningEndpoint) ListFineTuningEvents(fineTuningJobId string, after *string, limit *int) ([]FineTuningEvent, error) {
+	v := url.Values{}
+	if after != nil {
+		v.Add("after", *after)
+	}
+	if limit != nil {
+		v.Add("limit", strconv.Itoa(*limit))
+	}
 	var fineTuningEvents FineTuningEvents
-	err := e.do(e, "GET", "jobs/"+fineTuningJobId+"/events", req, nil, &fineTuningEvents)
+	err := e.do(e, "GET", "jobs/"+fineTuningJobId+"/events", nil, v, &fineTuningEvents)
 	return fineTuningEvents.Data, err
 }
