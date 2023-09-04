@@ -54,6 +54,6 @@ type Moderation struct {
 // [OpenAI Documentation]: https://platform.openai.com/docs/api-reference/moderations/create
 func (e *ModerationsEndpoint) CreateModeration(req *ModerationRequest) (*Moderation, error) {
 	var moderation Moderation
-	err := e.do(e, "POST", "", req, &moderation)
+	err := e.do(e, "POST", "", req, nil, &moderation)
 	return &moderation, err
 }

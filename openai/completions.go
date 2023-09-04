@@ -100,6 +100,6 @@ type CompletionResponse struct {
 // [OpenAI Documentation]: https://platform.openai.com/docs/api-reference/completions/create
 func (e *CompletionsEndpoint) CreateCompletion(req *CompletionRequest) (*CompletionResponse, error) {
 	var resp CompletionResponse
-	err := e.do(e, "POST", "", req, &resp)
+	err := e.do(e, "POST", "", req, nil, &resp)
 	return &resp, err
 }

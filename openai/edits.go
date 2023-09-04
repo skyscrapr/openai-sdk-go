@@ -54,6 +54,6 @@ type EditResponse struct {
 // [OpenAI Documentation]: https://platform.openai.com/docs/api-reference/edits/create
 func (e *EditsEndpoint) CreateEdit(req *EditRequest) (*EditResponse, error) {
 	var resp EditResponse
-	err := e.do(e, "POST", "", req, &resp)
+	err := e.do(e, "POST", "", req, nil, &resp)
 	return &resp, err
 }

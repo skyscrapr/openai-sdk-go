@@ -36,7 +36,7 @@ func NewClient(authToken string) *Client {
 	return c
 }
 
-func (c *Client) do(e endpointI, method string, path string, body interface{}, result interface{}) error {
+func (c *Client) do(e endpointI, method string, path string, body interface{}, values url.Values, result interface{}) error {
 	u, err := e.buildURL(path)
 	if err != nil {
 		return err
@@ -44,6 +44,9 @@ func (c *Client) do(e endpointI, method string, path string, body interface{}, r
 	req, err := e.newRequest(method, u, body)
 	if err != nil {
 		return err
+	}
+	if values != nil {
+		req.URL.RawQuery = values.Encode()
 	}
 	return e.doRequest(req, result)
 }

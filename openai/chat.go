@@ -87,6 +87,6 @@ type ChatCompletionResponse struct {
 // [OpenAI Documentation]: https://platform.openai.com/docs/api-reference/chat/create
 func (e *ChatEndpoint) CreateChatCompletion(req *ChatCompletionRequest) (*ChatCompletionResponse, error) {
 	var resp ChatCompletionResponse
-	err := e.do(e, "POST", "completions", req, &resp)
+	err := e.do(e, "POST", "completions", req, nil, &resp)
 	return &resp, err
 }

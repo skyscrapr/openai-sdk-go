@@ -58,7 +58,7 @@ type Models struct {
 // [OpenAI Documentation]: https://beta.openai.com/docs/api-reference/models/list
 func (e *ModelsEndpoint) ListModels() ([]Model, error) {
 	var models Models
-	err := e.do(e, "GET", "", nil, &models)
+	err := e.do(e, "GET", "", nil, nil, &models)
 	// TODO: This needs to move somewhere central
 	if err == nil && models.Object != "list" {
 		err = fmt.Errorf("expected 'list' object type, got %s", models.Object)
@@ -72,7 +72,7 @@ func (e *ModelsEndpoint) ListModels() ([]Model, error) {
 // [OpenAI Documentation]: https://beta.openai.com/docs/api-reference/models/retrieve
 func (e *ModelsEndpoint) RetrieveModel(id string) (*Model, error) {
 	var model Model
-	err := e.do(e, "GET", id, nil, &model)
+	err := e.do(e, "GET", id, nil, nil, &model)
 	return &model, err
 }
 
@@ -85,7 +85,7 @@ func (e *ModelsEndpoint) DeleteFineTuneModel(id string) (bool, error) {
 		Deleted bool   `json:"deleted"`
 	}
 	var resp DeleteResponse
-	err := e.do(e, "DELETE", url.QueryEscape(id), nil, &resp)
+	err := e.do(e, "DELETE", url.QueryEscape(id), nil, nil, &resp)
 	if err != nil {
 		return false, err
 	}

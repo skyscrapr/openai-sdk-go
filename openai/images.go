@@ -79,7 +79,7 @@ type CreateImageVariationRequest struct {
 // [OpenAI Documentation]: https://platform.openai.com/docs/api-reference/images/create
 func (e *ImagesEndpoint) CreateImage(req *CreateImageRequest) (*ImagesResponse, error) {
 	var resp ImagesResponse
-	err := e.do(e, "POST", "generations", req, &resp)
+	err := e.do(e, "POST", "generations", req, nil, &resp)
 	return &resp, err
 }
 
@@ -88,7 +88,7 @@ func (e *ImagesEndpoint) CreateImage(req *CreateImageRequest) (*ImagesResponse, 
 // [OpenAI Documentation]: https://platform.openai.com/docs/api-reference/images/create-edit
 func (e *ImagesEndpoint) CreateImageEdit(req *CreateImageEditRequest) (*ImagesResponse, error) {
 	var resp ImagesResponse
-	err := e.do(e, "POST", "edits", req, &resp)
+	err := e.do(e, "POST", "edits", req, nil, &resp)
 	return &resp, err
 }
 
@@ -97,6 +97,6 @@ func (e *ImagesEndpoint) CreateImageEdit(req *CreateImageEditRequest) (*ImagesRe
 // [OpenAI Documentation]: https://platform.openai.com/docs/api-reference/images/create-variation
 func (e *ImagesEndpoint) CreateImageVariation(req *CreateImageVariationRequest) (*ImagesResponse, error) {
 	var resp ImagesResponse
-	err := e.do(e, "POST", "edits", req, &resp)
+	err := e.do(e, "POST", "edits", req, nil, &resp)
 	return &resp, err
 }

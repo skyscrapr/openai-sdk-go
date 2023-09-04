@@ -45,6 +45,6 @@ type EmbeddingsResponse struct {
 // [OpenAI Documentation]: https://platform.openai.com/docs/api-reference/embeddings
 func (e *EmbeddingsEndpoint) CreateEmbeddings(req *EmbeddingsRequest) (*EmbeddingsResponse, error) {
 	var resp EmbeddingsResponse
-	err := e.do(e, "POST", "", req, &resp)
+	err := e.do(e, "POST", "", req, nil, &resp)
 	return &resp, err
 }

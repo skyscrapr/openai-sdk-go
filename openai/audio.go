@@ -56,7 +56,7 @@ type AudioTranslationRequest struct {
 // [OpenAI Documentation]: https://platform.openai.com/docs/api-reference/audio/create
 func (e *AudioEndpoint) CreateTranscription(req *AudioTranscriptionRequest) (*AudioResponse, error) {
 	var resp AudioResponse
-	err := e.do(e, "POST", "transcriptions", req, &resp)
+	err := e.do(e, "POST", "transcriptions", req, nil, &resp)
 	return &resp, err
 }
 
@@ -65,6 +65,6 @@ func (e *AudioEndpoint) CreateTranscription(req *AudioTranscriptionRequest) (*Au
 // [OpenAI Documentation]: https://platform.openai.com/docs/api-reference/audio/create
 func (e *AudioEndpoint) CreateTranslation(req *AudioTranslationRequest) (*AudioResponse, error) {
 	var resp AudioResponse
-	err := e.do(e, "POST", "translations", req, &resp)
+	err := e.do(e, "POST", "translations", req, nil, &resp)
 	return &resp, err
 }

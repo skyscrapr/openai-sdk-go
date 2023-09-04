@@ -42,7 +42,7 @@ type Files struct {
 // [OpenAI Documentation]: https://platform.openai.com/docs/api-reference/files
 func (e *FilesEndpoint) ListFiles() ([]File, error) {
 	var files Files
-	err := e.do(e, "GET", "", nil, &files)
+	err := e.do(e, "GET", "", nil, nil, &files)
 	if err == nil && files.Object != "list" {
 		err = fmt.Errorf("expected 'list' object type, got %s", files.Object)
 	}
@@ -110,7 +110,7 @@ type DeleteFileResponse struct {
 // [OpenAI Documentation]: https://platform.openai.com/docs/api-reference/files
 func (e *FilesEndpoint) DeleteFile(fileId string) (bool, error) {
 	var resp DeleteFileResponse
-	err := e.do(e, "DELETE", fileId, nil, &resp)
+	err := e.do(e, "DELETE", fileId, nil, nil, &resp)
 	if err != nil {
 		return false, err
 	}
@@ -121,7 +121,7 @@ func (e *FilesEndpoint) DeleteFile(fileId string) (bool, error) {
 // [OpenAI Documentation]: https://platform.openai.com/docs/api-reference/files
 func (e *FilesEndpoint) RetrieveFile(fileId string) (*File, error) {
 	var file File
-	err := e.do(e, "GET", fileId, nil, &file)
+	err := e.do(e, "GET", fileId, nil, nil, &file)
 	return &file, err
 }
 
@@ -129,6 +129,6 @@ func (e *FilesEndpoint) RetrieveFile(fileId string) (*File, error) {
 // [OpenAI Documentation]: https://platform.openai.com/docs/api-reference/files
 func (e *FilesEndpoint) RetrieveFileContent(fileId string) (*string, error) {
 	var data string
-	err := e.do(e, "GET", fileId+"/content", nil, &data)
+	err := e.do(e, "GET", fileId+"/content", nil, nil, &data)
 	return &data, err
 }

@@ -2,6 +2,8 @@ package openai
 
 import (
 	"fmt"
+	"net/url"
+	"strconv"
 )
 
 const FineTuningEndpointPath = "/fine_tuning/"
@@ -32,10 +34,10 @@ type FineTuningJob struct {
 	Hyperparams    struct {
 		NEpochs int64 `json:"n_epochs,omitempty"`
 	} `json:"hyperparams,omitempty"`
-	TrainingFile   *File  `json:"training_file"`
-	ValidationFile *File  `json:"validation_file"`
-	ResultFiles    []File `json:"result_files"`
-	TrainedTokens  int64  `json:"trained_tokens,omitempty"`
+	TrainingFile   string   `json:"training_file"`
+	ValidationFile string   `json:"validation_file"`
+	ResultFiles    []string `json:"result_files"`
+	TrainedTokens  int64    `json:"trained_tokens,omitempty"`
 }
 
 type FineTuningEvents struct {
@@ -96,7 +98,7 @@ type CreateFineTuningJobRequest struct {
 // [OpenAI Documentation]: https://platform.openai.com/docs/api-reference/fine-tunes
 func (e *FineTuningEndpoint) CreateFineTuningJob(req *CreateFineTuningJobRequest) (*FineTuningJob, error) {
 	var fineTuningJob FineTuningJob
-	err := e.do(e, "POST", "jobs", req, &fineTuningJob)
+	err := e.do(e, "POST", "jobs", req, nil, &fineTuningJob)
 	return &fineTuningJob, err
 }
 
@@ -106,19 +108,17 @@ type FineTuningJobs struct {
 	HasMore bool            `json:"has_more"`
 }
 
-type ListFineTuningJobsRequest struct {
-	// Identifier for the last job from the previous pagination request.
-	After string `json:"after,omitempty"`
-
-	// Number of fine-tuning jobs to retrieve.
-	// Defaults to 20
-	Limit int64 `json:"limit,omitempty"`
-}
-
 // Returns a list of paginated fine-tuning job objects.
-func (e *FineTuningEndpoint) ListFineTuningJobs(req *ListFineTuningJobsRequest) ([]FineTuningJob, error) {
+func (e *FineTuningEndpoint) ListFineTuningJobs(after *string, limit *int) ([]FineTuningJob, error) {
+	v := url.Values{}
+	if after != nil {
+		v.Add("after", *after)
+	}
+	if limit != nil {
+		v.Add("limit", strconv.Itoa(*limit))
+	}
 	var fineTuningJobs FineTuningJobs
-	err := e.do(e, "GET", "jobs", req, &fineTuningJobs)
+	err := e.do(e, "GET", "jobs", nil, v, &fineTuningJobs)
 	// TODO: This needs to move somewhere central
 	if err == nil && fineTuningJobs.Object != "list" {
 		err = fmt.Errorf("expected 'list' object type, got %s", fineTuningJobs.Object)
@@ -130,7 +130,7 @@ func (e *FineTuningEndpoint) ListFineTuningJobs(req *ListFineTuningJobsRequest) 
 // Returns the fine-tuning object with the given ID.
 func (e *FineTuningEndpoint) GetFineTuningJob(fineTuningJobId string) (*FineTuningJob, error) {
 	var fineTuningJob FineTuningJob
-	err := e.do(e, "GET", "jobs/"+fineTuningJobId, nil, &fineTuningJob)
+	err := e.do(e, "GET", "jobs/"+fineTuningJobId, nil, nil, &fineTuningJob)
 	return &fineTuningJob, err
 }
 
@@ -138,7 +138,7 @@ func (e *FineTuningEndpoint) GetFineTuningJob(fineTuningJobId string) (*FineTuni
 // Returns the cancelled fine-tuning object.
 func (e *FineTuningEndpoint) CancelFineTuningJob(fineTuningJobId string) (*FineTuningJob, error) {
 	var fineTuningJob FineTuningJob
-	err := e.do(e, "POST", "jobs/"+fineTuningJobId+"/cancel", nil, &fineTuningJob)
+	err := e.do(e, "POST", "jobs/"+fineTuningJobId+"/cancel", nil, nil, &fineTuningJob)
 	return &fineTuningJob, err
 }
 
@@ -155,6 +155,6 @@ type ListFineTuningEventsRequest struct {
 // Returns a list of fine-tuning event objects.
 func (e *FineTuningEndpoint) ListFineTuningEvents(fineTuningJobId string, req ListFineTuningEventsRequest) ([]FineTuningEvent, error) {
 	var fineTuningEvents FineTuningEvents
-	err := e.do(e, "GET", "jobs/"+fineTuningJobId+"/events", req, &fineTuningEvents)
+	err := e.do(e, "GET", "jobs/"+fineTuningJobId+"/events", req, nil, &fineTuningEvents)
 	return fineTuningEvents.Data, err
 }
