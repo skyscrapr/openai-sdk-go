@@ -4,7 +4,7 @@ import (
 	"fmt"
 )
 
-const FineTuningEndpointPath = "/fine-tuning/"
+const FineTuningEndpointPath = "/fine_tuning/"
 
 // FineTuning Endpoint
 //
@@ -30,12 +30,12 @@ type FineTuningJob struct {
 	OrganizationId string `json:"organization_id"`
 	Status         string `json:"status"`
 	Hyperparams    struct {
-		NEpochs int64 `json:"n_epochs"`
-	} `json:"hyperparams"`
-	TrainingFiles   []File `json:"training_files"`
-	ValidationFiles []File `json:"validation_files"`
-	ResultFiles     []File `json:"result_files"`
-	TrainedTokens   int64  `json:"trained_tokens"`
+		NEpochs int64 `json:"n_epochs,omitempty"`
+	} `json:"hyperparams,omitempty"`
+	TrainingFile   *File  `json:"training_file"`
+	ValidationFile *File  `json:"validation_file"`
+	ResultFiles    []File `json:"result_files"`
+	TrainedTokens  int64  `json:"trained_tokens,omitempty"`
 }
 
 type FineTuningEvents struct {
@@ -46,9 +46,12 @@ type FineTuningEvents struct {
 
 type FineTuningEvent struct {
 	Object    string `json:"object"`
+	Id        string `json:"id"`
 	CreatedAt int    `json:"created_at"`
 	Level     string `json:"level"`
 	Message   string `json:"message"`
+	// Data	  string `json:"data"`
+	Type string `json:"type"`
 }
 
 // EventHandler is a callback that gets called every time event on the SSE
@@ -78,7 +81,7 @@ type CreateFineTuningJobRequest struct {
 	// The hyperparameters used for the fine-tuning job.
 	Hyperparameters struct {
 		// The number of epochs to train the model for. An epoch refers to one full cycle through the training dataset.
-		NEpochs int64 `json:"n_epochs"`
+		NEpochs int64 `json:"n_epochs,omitempty"`
 	} `json:"hyperparameters,omitempty"`
 
 	// Defaults to null
