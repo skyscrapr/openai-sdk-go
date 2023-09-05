@@ -32,8 +32,8 @@ type FineTuningJob struct {
 	OrganizationId string `json:"organization_id"`
 	Status         string `json:"status"`
 	Hyperparams    struct {
-		NEpochs int64 `json:"n_epochs,omitempty"`
-	} `json:"hyperparams,omitempty"`
+		NEpochs int64 `json:"n_epochs"`
+	} `json:"hyperparams"`
 	TrainingFile   string   `json:"training_file"`
 	ValidationFile *string  `json:"validation_file"`
 	ResultFiles    []string `json:"result_files"`
