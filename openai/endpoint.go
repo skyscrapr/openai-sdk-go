@@ -21,10 +21,21 @@ type endpoint struct {
 	EndpointPath string
 }
 
+type betaEndpoint struct {
+	endpoint
+}
+
 func newEndpoint(c *Client, endpointPath string) *endpoint {
 	e := &endpoint{
 		Client:       c,
 		EndpointPath: endpointPath,
+	}
+	return e
+}
+
+func newBetaEndpoint(c *Client, endpointPath string) *betaEndpoint {
+	e := &betaEndpoint{
+		endpoint: *newEndpoint(c, endpointPath),
 	}
 	return e
 }
@@ -46,4 +57,10 @@ func (e *endpoint) doRequest(req *http.Request, v any) error {
 
 func (e *endpoint) newRequest(method string, u *url.URL, body interface{}) (*http.Request, error) {
 	return e.Client.newRequest(method, u, body)
+}
+
+func (e *betaEndpoint) newRequest(method string, u *url.URL, body interface{}) (*http.Request, error) {
+	req, err := e.Client.newRequest(method, u, body)
+	req.Header.Set("OpenAI-Beta", "assistants=v1")
+	return req, err
 }
