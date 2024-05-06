@@ -23,16 +23,18 @@ func (c *Client) Assistants() *AssistantsEndpoint {
 }
 
 type Assistant struct {
-	Id           string            `json:"id"`
-	Object       string            `json:"object"` // The object type, which is always assistant.
-	CreatedAt    int64             `json:"created_at"`
-	Name         *string           `json:"name"`
-	Description  *string           `json:"description"`
-	Model        string            `json:"model"`
-	Instructions *string           `json:"instructions"`
-	Tools        []AssistantTool   `json:"tools,omitempty"`
-	FileIds      []string          `json:"file_ids"`
-	MetaData     map[string]string `json:"metadata,omitempty"`
+	Id            string                  `json:"id"`
+	Object        string                  `json:"object"` // The object type, which is always assistant.
+	CreatedAt     int64                   `json:"created_at"`
+	Name          *string                 `json:"name"`
+	Description   *string                 `json:"description"`
+	Model         string                  `json:"model"`
+	Instructions  *string                 `json:"instructions"`
+	Tools         []AssistantTool         `json:"tools,omitempty"`
+	ToolResources *AssistantToolResources `json:"tool_resources,omitempty"`
+	MetaData      map[string]string       `json:"metadata,omitempty"`
+	Temperature   float64                 `json:"temperature,omitempty"`
+	TopP          float64                 `json:"top_p,omitempty"`
 }
 
 type Assistants struct {
@@ -59,10 +61,13 @@ type AssistantRequest struct {
 	Tools []AssistantTool `json:"tools,omitempty"`
 
 	// A list of file IDs attached to this assistant. There can be a maximum of 20 files attached to the assistant. Files are ordered by their creation date in ascending order.
-	FileIds []string `json:"file_ids,omitempty"`
+	ToolResources *AssistantToolResources `json:"tool_resources,omitempty"`
 
 	// Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and va
 	MetaData map[string]string `json:"metadata,omitempty"`
+
+	Temperature float64 `json:"temperature,omitempty"`
+	TopP        float64 `json:"top_p,omitempty"`
 }
 
 type AssistantFile struct {
@@ -90,6 +95,19 @@ type AssistantTool struct {
 		Name        string  `json:"name"`
 		Parameters  string  `json:"parameters"`
 	} `json:"function,omitempty"`
+}
+
+type AssistantToolResources struct {
+	CodeInterpreter *struct {
+		FileIDs []string `json:"file_ids"`
+	} `json:"code_interpreter,omitempty"`
+	FileSearch *struct {
+		VectorStoreIDs []string `json:"vector_store_ids"`
+		VectorStore    *struct {
+			FileIDs  []string          `json:"file_ids"`
+			MetaData map[string]string `json:"metadata,omitempty"`
+		} `json:"vector_store,omitempty"`
+	} `json:"file_search,omitempty"`
 }
 
 // Create an assistant with a model and instructions.

@@ -7,7 +7,7 @@ import (
 	"testing"
 
 	"github.com/skyscrapr/openai-sdk-go/openai"
-	"github.com/skyscrapr/openai-sdk-go/openai/test"
+	openai_test "github.com/skyscrapr/openai-sdk-go/openai/test"
 )
 
 func TestCreateAssistant(t *testing.T) {
@@ -32,8 +32,17 @@ func TestCreateAssistant(t *testing.T) {
 		Name:         &name,
 		Description:  &description,
 		Instructions: &instructions,
-		FileIds:      []string{"test_file_id_1", "test_file_id_2"},
-		MetaData:     map[string]string{"test_key_1": "test_value_1"},
+		Tools: []openai.AssistantTool{{
+			Type: "code_intepreter",
+		}},
+		ToolResources: &openai.AssistantToolResources{
+			CodeInterpreter: &struct {
+				FileIDs []string "json:\"file_ids\""
+			}{
+				FileIDs: []string{"file_1", "file_2"},
+			},
+		},
+		MetaData: map[string]string{"test_key_1": "test_value_1"},
 	}
 	_, err := client.Assistants().CreateAssistant(&req)
 	t.Helper()
