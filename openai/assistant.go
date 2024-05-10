@@ -103,10 +103,10 @@ type AssistantToolResources struct {
 	} `json:"code_interpreter,omitempty"`
 	FileSearch *struct {
 		VectorStoreIDs []string `json:"vector_store_ids"`
-		VectorStore    *struct {
+		VectorStores   *struct {
 			FileIDs  []string          `json:"file_ids"`
 			MetaData map[string]string `json:"metadata,omitempty"`
-		} `json:"vector_store,omitempty"`
+		} `json:"vector_stores,omitempty"`
 	} `json:"file_search,omitempty"`
 }
 

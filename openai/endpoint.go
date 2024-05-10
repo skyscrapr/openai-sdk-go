@@ -61,6 +61,6 @@ func (e *endpoint) newRequest(method string, u *url.URL, body interface{}) (*htt
 
 func (e *betaEndpoint) newRequest(method string, u *url.URL, body interface{}) (*http.Request, error) {
 	req, err := e.Client.newRequest(method, u, body)
-	req.Header.Set("OpenAI-Beta", "assistants=v1")
+	req.Header.Set("OpenAI-Beta", "assistants=v2")
 	return req, err
 }
