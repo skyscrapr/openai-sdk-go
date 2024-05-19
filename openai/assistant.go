@@ -91,9 +91,9 @@ type AssistantFileRequest struct {
 type AssistantTool struct {
 	Type     string `json:"type"`
 	Function *struct {
-		Description *string `json:"description,omitempty"`
-		Name        string  `json:"name"`
-		Parameters  string  `json:"parameters"`
+		Description *string                `json:"description,omitempty"`
+		Name        string                 `json:"name"`
+		Parameters  map[string]interface{} `json:"parameters"`
 	} `json:"function,omitempty"`
 }
 
