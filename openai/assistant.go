@@ -126,9 +126,9 @@ func (e *AssistantsEndpoint) RetrieveAssistant(assistantId string) (*Assistant, 
 }
 
 // Modifies an assistant.
-func (e *AssistantsEndpoint) ModifyAssistant(req *AssistantRequest) (*Assistant, error) {
+func (e *AssistantsEndpoint) ModifyAssistant(assistantId string, req *AssistantRequest) (*Assistant, error) {
 	var assistant Assistant
-	err := e.do(e, "POST", "", req, nil, &assistant)
+	err := e.do(e, "POST", assistantId, req, nil, &assistant)
 	return &assistant, err
 }
 
