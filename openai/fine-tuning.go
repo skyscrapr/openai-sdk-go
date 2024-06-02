@@ -97,8 +97,6 @@ type CreateFineTuningJobRequest struct {
 // Learn more about Fine-tuning
 // [OpenAI Documentation]: https://platform.openai.com/docs/api-reference/fine-tunes
 func (e *FineTuningEndpoint) CreateFineTuningJob(req *CreateFineTuningJobRequest) (*FineTuningJob, error) {
-	// if req.Hyperparameters.NEpochs
-
 	var fineTuningJob FineTuningJob
 	err := e.do(e, "POST", "jobs", req, nil, &fineTuningJob)
 	return &fineTuningJob, err
