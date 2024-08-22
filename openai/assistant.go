@@ -23,18 +23,19 @@ func (c *Client) Assistants() *AssistantsEndpoint {
 }
 
 type Assistant struct {
-	Id            string                  `json:"id"`
-	Object        string                  `json:"object"` // The object type, which is always assistant.
-	CreatedAt     int64                   `json:"created_at"`
-	Name          *string                 `json:"name"`
-	Description   *string                 `json:"description"`
-	Model         string                  `json:"model"`
-	Instructions  *string                 `json:"instructions"`
-	Tools         []AssistantTool         `json:"tools,omitempty"`
-	ToolResources *AssistantToolResources `json:"tool_resources,omitempty"`
-	MetaData      map[string]string       `json:"metadata,omitempty"`
-	Temperature   float64                 `json:"temperature,omitempty"`
-	TopP          float64                 `json:"top_p,omitempty"`
+	Id             string                   `json:"id"`
+	Object         string                   `json:"object"` // The object type, which is always assistant.
+	CreatedAt      int64                    `json:"created_at"`
+	Name           *string                  `json:"name"`
+	Description    *string                  `json:"description"`
+	Model          string                   `json:"model"`
+	Instructions   *string                  `json:"instructions"`
+	Tools          []AssistantTool          `json:"tools,omitempty"`
+	ToolResources  *AssistantToolResources  `json:"tool_resources,omitempty"`
+	MetaData       map[string]string        `json:"metadata,omitempty"`
+	Temperature    float64                  `json:"temperature,omitempty"`
+	TopP           float64                  `json:"top_p,omitempty"`
+	ResponseFormat *AssistantResponseFormat `json:"response_format,omitempty"`
 }
 
 type Assistants struct {
@@ -68,6 +69,8 @@ type AssistantRequest struct {
 
 	Temperature float64 `json:"temperature,omitempty"`
 	TopP        float64 `json:"top_p,omitempty"`
+
+	ResponseFormat *AssistantResponseFormat `json:"response_format,omitempty"`
 }
 
 type AssistantFile struct {
@@ -108,6 +111,16 @@ type AssistantToolResources struct {
 			MetaData map[string]string `json:"metadata,omitempty"`
 		} `json:"vector_stores,omitempty"`
 	} `json:"file_search,omitempty"`
+}
+
+type AssistantResponseFormat struct {
+	Type       string `json:"type"`
+	JsonSchema *struct {
+		Description *string                `json:"description,omitempty"`
+		Name        string                 `json:"name"`
+		Schema      map[string]interface{} `json:"schema"`
+		Strict      bool                   `json:"strict,omitempty"`
+	} `json:"json_schema,omitempty"`
 }
 
 // Create an assistant with a model and instructions.
