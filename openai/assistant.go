@@ -1,6 +1,7 @@
 package openai
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/url"
 	"strconv"
@@ -114,6 +115,7 @@ type AssistantToolResources struct {
 }
 
 type AssistantResponseFormat struct {
+	StringValue string `json:"-"`
 	Type       string `json:"type"`
 	JsonSchema *struct {
 		Description *string                `json:"description,omitempty"`
@@ -121,6 +123,27 @@ type AssistantResponseFormat struct {
 		Schema      map[string]interface{} `json:"schema"`
 		Strict      bool                   `json:"strict,omitempty"`
 	} `json:"json_schema,omitempty"`
+}
+
+func (f *AssistantResponseFormat) UnmarshalJSON(data []byte) error {
+	// First try to unmarshal it as string
+	var s string
+	if err := json.Unmarshal(data, &s); err == nil {
+		// No error, fill the struct
+		f.StringValue = s
+		return nil
+	}
+
+	// Otherwise, try to unmarshal as AssistantResponseFormat
+	type Alias AssistantResponseFormat
+	var responseFormat Alias
+	if err := json.Unmarshal(data, &responseFormat); err != nil {
+		return err
+	}
+	f.Type = responseFormat.Type
+	f.JsonSchema = responseFormat.JsonSchema
+
+	return nil
 }
 
 // Create an assistant with a model and instructions.

@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"log"
 	"net/http"
 	"net/url"
 	"time"
@@ -96,11 +95,16 @@ func decodeResponse(body io.Reader, v any) error {
 	if v == nil {
 		return nil
 	}
-	err := json.NewDecoder(body).Decode(v)
-	if err != nil {
-		log.Fatal(err)
-	}
-	return nil
+	return json.NewDecoder(body).Decode(v)
+
+	//
+	// DEBUG - Use below if you want to see the raw response body
+	//
+	// rawBody, err := io.ReadAll(body)
+	// if err != nil {
+	// 	return err
+	// }
+	// return json.Unmarshal(rawBody, v)
 }
 
 func (c *Client) handleErrorResp(resp *http.Response) error {
