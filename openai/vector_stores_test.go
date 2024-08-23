@@ -55,7 +55,7 @@ func TestListVectorStores(t *testing.T) {
 
 func TestCreateVectorStore(t *testing.T) {
 	ts := openai_test.NewTestServer()
-	ts.RegisterHandler("/v1/vector_stores/", func(w http.ResponseWriter, _ *http.Request) {
+	ts.RegisterHandler("/v1/vector_stores", func(w http.ResponseWriter, _ *http.Request) {
 		resBytes, _ := json.Marshal(openai.VectorStore{
 			Id:         "testVectorStoreId",
 			Object:     "vector_store",
@@ -90,11 +90,11 @@ func TestCreateVectorStore(t *testing.T) {
 	})
 	t.Helper()
 	if err != nil {
-		t.Error(err, "RetrieveVectorStore error")
+		t.Error(err, "CreateVectorStore error")
 		t.Fail()
 	}
 	if vectorStore.Id != "testVectorStoreId" {
-		t.Error("RetrieveVectorStore ID error")
+		t.Error("CreateVectorStore ID error")
 		t.Fail()
 	}
 }
