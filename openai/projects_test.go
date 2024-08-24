@@ -13,8 +13,8 @@ import (
 // TestListProjects Tests the Projects endpoint of the API using the mocked server.
 func TestListProjects(t *testing.T) {
 	ts := openai_test.NewTestServer()
-	ts.RegisterHandler("/v1/organizations/projects", func(w http.ResponseWriter, _ *http.Request) {
-		resBytes, _ := json.Marshal(openai.Projects{Object: "list", Data: nil})
+	ts.RegisterHandler("/v1/organization/projects", func(w http.ResponseWriter, _ *http.Request) {
+		resBytes, _ := json.Marshal(openai.Projects{Object: "list", Data: []openai.Project{{Name: "Project1"}}})
 		fmt.Fprintln(w, string(resBytes))
 	})
 	ts.HTTPServer.Start()
@@ -32,7 +32,7 @@ func TestListProjectsInvalidObject(t *testing.T) {
 	expectedError := "expected 'list' object type, got project"
 
 	ts := openai_test.NewTestServer()
-	ts.RegisterHandler("/v1/organizations/projects", func(w http.ResponseWriter, _ *http.Request) {
+	ts.RegisterHandler("/v1/organization/projects", func(w http.ResponseWriter, _ *http.Request) {
 		resBytes, _ := json.Marshal(openai.Projects{Object: "project", Data: nil})
 		fmt.Fprintln(w, string(resBytes))
 	})
@@ -51,7 +51,7 @@ func TestListProjectsInvalidObject(t *testing.T) {
 func TestRetrieveProject(t *testing.T) {
 	testProjectID := "testProjectID"
 	ts := openai_test.NewTestServer()
-	ts.RegisterHandler("/v1/organizations/projects/testProjectID", func(w http.ResponseWriter, _ *http.Request) {
+	ts.RegisterHandler("/v1/organization/projects/testProjectID", func(w http.ResponseWriter, _ *http.Request) {
 		resBytes, _ := json.Marshal(openai.Project{Object: "project", ID: testProjectID})
 		fmt.Fprintln(w, string(resBytes))
 	})

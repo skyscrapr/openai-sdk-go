@@ -30,7 +30,7 @@ func (ts *TestServer) enableHandlers() *httptest.Server {
 		log.Printf("received request at path %q\n", r.URL.Path)
 
 		// check auth
-		if r.Header.Get("Authorization") != "Bearer "+GetTestAuthToken() {
+		if r.Header.Get("Authorization") != "Bearer "+GetTestAuthToken() && r.Header.Get("Authorization") != "Bearer "+GetTestAdminToken() {
 			w.WriteHeader(http.StatusUnauthorized)
 			return
 		}
