@@ -16,7 +16,8 @@ const (
 
 // Client - OpenAI client.
 type Client struct {
-	authToken string
+	authToken  string
+	adminToken string
 
 	BaseURL        *url.URL
 	OrganizationID string
@@ -25,10 +26,11 @@ type Client struct {
 }
 
 // NewClient creates new OpenAI client.
-func NewClient(authToken string) *Client {
+func NewClient(authToken string, adminToken string) *Client {
 	c := &Client{
 		HTTPClient: &http.Client{Timeout: 30 * time.Second},
 		authToken:  authToken,
+		adminToken: adminToken,
 		UserAgent:  "skyscrapr/openai-sdk-go",
 	}
 	c.BaseURL, _ = url.Parse(apiURL)

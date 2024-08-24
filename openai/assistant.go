@@ -116,8 +116,8 @@ type AssistantToolResources struct {
 
 type AssistantResponseFormat struct {
 	StringValue string `json:"-"`
-	Type       string `json:"type"`
-	JsonSchema *struct {
+	Type        string `json:"type"`
+	JsonSchema  *struct {
 		Description *string                `json:"description,omitempty"`
 		Name        string                 `json:"name"`
 		Schema      map[string]interface{} `json:"schema"`
