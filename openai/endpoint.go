@@ -1,6 +1,7 @@
 package openai
 
 import (
+	"fmt"
 	"net/http"
 	"net/url"
 	"path"
@@ -25,6 +26,10 @@ type betaEndpoint struct {
 	endpoint
 }
 
+type organizationEndpoint struct {
+	endpoint
+}
+
 func newEndpoint(c *Client, endpointPath string) *endpoint {
 	e := &endpoint{
 		Client:       c,
@@ -35,6 +40,13 @@ func newEndpoint(c *Client, endpointPath string) *endpoint {
 
 func newBetaEndpoint(c *Client, endpointPath string) *betaEndpoint {
 	e := &betaEndpoint{
+		endpoint: *newEndpoint(c, endpointPath),
+	}
+	return e
+}
+
+func newOrganizationEndpoint(c *Client, endpointPath string) *organizationEndpoint {
+	e := &organizationEndpoint{
 		endpoint: *newEndpoint(c, endpointPath),
 	}
 	return e
@@ -62,5 +74,11 @@ func (e *endpoint) newRequest(method string, u *url.URL, body interface{}) (*htt
 func (e *betaEndpoint) newRequest(method string, u *url.URL, body interface{}) (*http.Request, error) {
 	req, err := e.Client.newRequest(method, u, body)
 	req.Header.Set("OpenAI-Beta", "assistants=v2")
+	return req, err
+}
+
+func (e *organizationEndpoint) newRequest(method string, u *url.URL, body interface{}) (*http.Request, error) {
+	req, err := e.Client.newRequest(method, u, body)
+	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", e.adminToken))
 	return req, err
 }

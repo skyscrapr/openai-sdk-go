@@ -6,7 +6,7 @@ import (
 
 func TestNewEndpoint(t *testing.T) {
 	testEndpointPath := "testEndpointPath"
-	testClient := NewClient("testapikey")
+	testClient := NewClient("testapikey", "testadminkey")
 	e := newEndpoint(testClient, testEndpointPath)
 	if e.BaseURL.String() != testClient.BaseURL.String() {
 		t.Errorf("VendorsEndpoint BaseURL mismatch. Got %s. Want %s", e.BaseURL.String(), testClient.BaseURL.String())
